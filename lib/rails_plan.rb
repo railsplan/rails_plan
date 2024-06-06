@@ -19,15 +19,22 @@ module RailsPlan
       ::RailsPlan::GemVersion.validate!
 
       verify_rails_installation
+      
       generate_project(template)
       generate_files(template['files'])
-      run_commands(template['commands'])
+      run_commands(template['before_commands'])
       clone_files(template['clones'])
       inject_code(template['inject_code'])
       append_code(template['append_code'])
       update_files(template['gsub'])
 
       puts 'Time for coding! 🚀'
+
+      template['steps'].each do |step|
+        run_commands(step['before_commands'])
+        generate_files(step['files'])
+        run_commands(step['after_commands'])
+      end
     end
 
     private
