@@ -28,11 +28,11 @@ module RailsPlan
       append_code(template['append_code'])
       update_files(template['gsub'])
 
-      puts 'Time for coding! 🚀'
-
       template['steps'].each do |step|
+        puts step['title'] if step['title']
         run_commands(step['before_commands'])
         generate_files(step['files'])
+        prepend_to_file(step['prepend_code'])
         run_commands(step['after_commands'])
       end
     end
@@ -74,6 +74,16 @@ module RailsPlan
 
       injections.each do |injection|
         thor_app.inject_into_class(injection['file_path'], injection['class_name'], injection['content'])
+      end
+    end
+
+    def prepend_to_file(injections)
+      return if injections.nil? || injections.empty?
+
+      thor_app = ::RailsPlan::RailsApp.new
+
+      injections.each do |injection|
+        thor_app.insert_into_file(injection['file_path'], injection['content'], after: injection['after'])
       end
     end
 
