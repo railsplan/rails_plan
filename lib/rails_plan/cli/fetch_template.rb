@@ -3,7 +3,6 @@
 module RailsPlan
   module Cli
     class FetchTemplate
-      COMMANDS = %w[apply].freeze
       API_URL = 'https://railsplan.com/api/v1'
 
       def call(uid)

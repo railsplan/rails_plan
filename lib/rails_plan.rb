@@ -6,6 +6,7 @@ require 'fileutils'
 require 'thor'
 
 require 'rails_plan/cli/fetch_template'
+require 'rails_plan/cli/fetch_branch'
 require 'rails_plan/cli/processor'
 require 'rails_plan/version'
 require 'rails_plan/rails_app'
@@ -18,7 +19,7 @@ module RailsPlan
     def start(template)
       ::RailsPlan::GemVersion.validate!
 
-      verify_rails_installation
+      # verify_rails_installation
       
       generate_project(template)
       generate_files(template['files'])
@@ -35,6 +36,14 @@ module RailsPlan
         prepend_to_file(step['prepend_code'])
         run_commands(step['after_commands'])
       end
+    end
+
+    def apply(template)
+      puts template['title']
+      run_commands(template['before_commands'])
+      generate_files(template['files'])
+      prepend_to_file(template['prepend_code'])
+      run_commands(template['after_commands'])
     end
 
     private
