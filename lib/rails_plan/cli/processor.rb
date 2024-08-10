@@ -3,7 +3,7 @@
 module RailsPlan
   module Cli
     class Processor
-      COMMANDS = %w[start apply].freeze
+      COMMANDS = %w[build].freeze
 
       InvalidCommand = Class.new(StandardError)
       InvalidUid = Class.new(StandardError)
@@ -16,13 +16,9 @@ module RailsPlan
       def call
         validate_command
 
-        raise InvalidUid, "Bootstrap plan or feature not found for #{@uid}" if json_template.nil?
+        raise InvalidUid, "Plan not found for #{@uid}" if json_template.nil?
 
-        if @command == 'start'
-          ::RailsPlan.start(json_template)
-        elsif @command == 'apply'
-          ::RailsPlan.apply(json_template)
-        end
+        ::RailsPlan.build(json_template)
       end
 
       private
@@ -34,11 +30,7 @@ module RailsPlan
       def json_template
         return @json_template if defined?(@json_template)
 
-        @json_template = if @command == 'start'
-          ::RailsPlan::Cli::FetchTemplate.new.call(@uid)
-        else
-          ::RailsPlan::Cli::FetchBranch.new.call(@uid)
-        end
+        @json_template = ::RailsPlan::Cli::FetchTemplate.new.call(@uid)
       end
     end
   end
