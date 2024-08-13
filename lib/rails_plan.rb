@@ -21,6 +21,8 @@ module RailsPlan
         FileUtils.mkdir_p(File.dirname(file_path))
         File.write(file_path, file['content'])
       end
+
+      FileUtils.chmod_R("u+x", './bin')
     end
   end
 end
