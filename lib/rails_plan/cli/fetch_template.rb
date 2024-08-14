@@ -3,10 +3,11 @@
 module RailsPlan
   module Cli
     class FetchTemplate
-      API_URL = 'https://railsplan.com/api/v1'
+      API_HOST = 'https://railsplan.com'
 
       def call(uid)
-        response = RestClient.get(API_URL + "/plans/#{uid}") { |res| res }
+        api_url = ENV.fetch('API_HOST', API_HOST)
+        response = RestClient.get(api_url + "/api/v1/plans/#{uid}") { |res| res }
 
         return if response.code != 200
 
